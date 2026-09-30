@@ -1,0 +1,37 @@
+@startuml
+
+title MEICash - Diagrama de Implantação\nIteração 1 da Fase de Construção
+
+top to bottom direction
+
+skinparam shadowing false
+skinparam linetype ortho
+skinparam componentStyle rectangle
+skinparam defaultTextAlignment center
+skinparam nodesep 60
+skinparam ranksep 55
+
+node "Dispositivo do MEI" as Cliente <<device>> {
+
+    artifact "Navegador Web" as Navegador
+}
+
+node "Render" as Render <<cloud server>> {
+
+    artifact "Gunicorn\nServidor WSGI" as Gunicorn
+
+    artifact "MEICash\nAplicação Web Flask" as Aplicacao
+
+    Gunicorn --> Aplicacao : WSGI
+}
+
+node "Neon" as Neon <<cloud database>> {
+
+    database "PostgreSQL\nBanco de Dados MEICash" as Banco
+}
+
+Navegador --> Gunicorn : HTTPS
+
+Aplicacao --> Banco : PostgreSQL / TLS
+
+@enduml
