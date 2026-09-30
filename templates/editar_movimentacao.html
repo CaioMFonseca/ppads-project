@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+
+{% block title %}
+Editar Movimentação - MEICash
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Editar Movimentação</h2>
+
+<p>
+    Tipo:
+    <strong>
+        {{ movimentacao.tipo|capitalize }}
+    </strong>
+</p>
+
+
+<form method="POST">
+
+    <div>
+
+        <label for="descricao">
+            Descrição
+        </label>
+
+        <input
+            type="text"
+            id="descricao"
+            name="descricao"
+            value="{{ movimentacao.descricao }}"
+            required
+        >
+
+    </div>
+
+
+    <div>
+
+        <label for="valor">
+            Valor
+        </label>
+
+        <input
+            type="number"
+            id="valor"
+            name="valor"
+            step="0.01"
+            min="0.01"
+            value="{{ movimentacao.valor }}"
+            required
+        >
+
+    </div>
+
+
+    <div>
+
+        <label for="data">
+            Data
+        </label>
+
+        <input
+            type="date"
+            id="data"
+            name="data"
+            value="{{ movimentacao.data.strftime('%Y-%m-%d') }}"
+            required
+        >
+
+    </div>
+
+
+    <div>
+
+        <label for="categoria">
+            Categoria
+        </label>
+
+        <input
+            type="text"
+            id="categoria"
+            name="categoria"
+            value="{{ movimentacao.categoria }}"
+            required
+        >
+
+    </div>
+
+
+    <div>
+
+        {% if movimentacao.tipo == "receita" %}
+
+            <label for="forma">
+                Forma de recebimento
+            </label>
+
+            <select
+                id="forma"
+                name="forma"
+                required
+            >
+
+                <option
+                    value="Pix"
+                    {% if movimentacao.forma_recebimento == "Pix" %}
+                        selected
+                    {% endif %}
+                >
+                    Pix
+                </option>
+
+                <option
+                    value="Dinheiro"
+                    {% if movimentacao.forma_recebimento == "Dinheiro" %}
+                        selected
+                    {% endif %}
+                >
+                    Dinheiro
+                </option>
+
+                <option
+                    value="Cartão"
+                    {% if movimentacao.forma_recebimento == "Cartão" %}
+                        selected
+                    {% endif %}
+                >
+                    Cartão
+                </option>
+
+                <option
+                    value="Transferência"
+                    {% if movimentacao.forma_recebimento == "Transferência" %}
+                        selected
+                    {% endif %}
+                >
+                    Transferência
+                </option>
+
+            </select>
+
+
+        {% else %}
+
+
+            <label for="forma">
+                Forma de pagamento
+            </label>
+
+            <select
+                id="forma"
+                name="forma"
+                required
+            >
+
+                <option
+                    value="Pix"
+                    {% if movimentacao.forma_pagamento == "Pix" %}
+                        selected
+                    {% endif %}
+                >
+                    Pix
+                </option>
+
+                <option
+                    value="Dinheiro"
+                    {% if movimentacao.forma_pagamento == "Dinheiro" %}
+                        selected
+                    {% endif %}
+                >
+                    Dinheiro
+                </option>
+
+                <option
+                    value="Cartão"
+                    {% if movimentacao.forma_pagamento == "Cartão" %}
+                        selected
+                    {% endif %}
+                >
+                    Cartão
+                </option>
+
+                <option
+                    value="Transferência"
+                    {% if movimentacao.forma_pagamento == "Transferência" %}
+                        selected
+                    {% endif %}
+                >
+                    Transferência
+                </option>
+
+                <option
+                    value="Boleto"
+                    {% if movimentacao.forma_pagamento == "Boleto" %}
+                        selected
+                    {% endif %}
+                >
+                    Boleto
+                </option>
+
+            </select>
+
+        {% endif %}
+
+    </div>
+
+
+    <div>
+
+        <label for="observacoes">
+            Observações
+        </label>
+
+        <textarea
+            id="observacoes"
+            name="observacoes"
+            rows="4"
+        >{{ movimentacao.observacoes or "" }}</textarea>
+
+    </div>
+
+
+    <button type="submit">
+        Salvar Alterações
+    </button>
+
+</form>
+
+
+<p>
+
+    <a href="{{ url_for('movimentacoes.listar') }}">
+        Cancelar
+    </a>
+
+</p>
+
+{% endblock %}

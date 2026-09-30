@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+
+{% block title %}
+Dashboard - MEICash
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Dashboard</h2>
+
+<p>
+    Olá, {{ current_user.nome }}!
+</p>
+
+
+<h3>Resumo financeiro</h3>
+
+<div class="resumo-financeiro">
+
+    <div class="card-resumo">
+
+        <h4>Receitas</h4>
+
+        <p>
+            R$
+            {{
+                "%.2f"|format(
+                    resumo.total_receitas
+                )
+            }}
+        </p>
+
+    </div>
+
+
+    <div class="card-resumo">
+
+        <h4>Despesas</h4>
+
+        <p>
+            R$
+            {{
+                "%.2f"|format(
+                    resumo.total_despesas
+                )
+            }}
+        </p>
+
+    </div>
+
+
+    <div class="card-resumo">
+
+        <h4>Saldo</h4>
+
+        <p>
+            R$
+            {{
+                "%.2f"|format(
+                    resumo.saldo
+                )
+            }}
+        </p>
+
+    </div>
+
+
+    <div class="card-resumo">
+
+        <h4>Movimentações</h4>
+
+        <p>
+            {{ resumo.quantidade }}
+        </p>
+
+    </div>
+
+</div>
+
+
+<h3>Acesso rápido</h3>
+
+
+<p>
+
+    <a
+        href="{{ url_for(
+            'movimentacoes.cadastrar_receita'
+        ) }}"
+    >
+        Cadastrar Receita
+    </a>
+
+    |
+
+    <a
+        href="{{ url_for(
+            'movimentacoes.cadastrar_despesa'
+        ) }}"
+    >
+        Cadastrar Despesa
+    </a>
+
+    |
+
+    <a
+        href="{{ url_for(
+            'movimentacoes.listar'
+        ) }}"
+    >
+        Ver Movimentações
+    </a>
+
+    |
+
+    <a
+        href="{{ url_for(
+            'relatorios.relatorio_financeiro'
+        ) }}"
+    >
+        Relatório Financeiro
+    </a>
+
+</p>
+
+
+<h3>
+    Movimentações recentes
+</h3>
+
+
+{% if movimentacoes_recentes %}
+
+<table>
+
+    <thead>
+
+        <tr>
+
+            <th>
+                Data
+            </th>
+
+            <th>
+                Descrição
+            </th>
+
+            <th>
+                Tipo
+            </th>
+
+            <th>
+                Valor
+            </th>
+
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for movimentacao
+            in movimentacoes_recentes %}
+
+        <tr>
+
+            <td>
+                {{
+                    movimentacao.data
+                    .strftime('%d/%m/%Y')
+                }}
+            </td>
+
+            <td>
+                {{ movimentacao.descricao }}
+            </td>
+
+            <td>
+                {{
+                    movimentacao.tipo
+                    |capitalize
+                }}
+            </td>
+
+            <td>
+                R$
+                {{
+                    "%.2f"|format(
+                        movimentacao.valor
+                    )
+                }}
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+{% else %}
+
+<p>
+    Nenhuma movimentação cadastrada.
+</p>
+
+{% endif %}
+
+
+<p>
+    <a href="{{ url_for('auth.logout') }}">
+        Sair
+    </a>
+</p>
+
+{% endblock %}

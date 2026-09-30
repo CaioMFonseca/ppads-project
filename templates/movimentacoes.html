@@ -1,0 +1,328 @@
+{% extends "base.html" %}
+
+{% block title %}
+Movimentações - MEICash
+{% endblock %}
+
+
+{% block content %}
+
+<h2>Movimentações</h2>
+
+<p>
+    Consulte e gerencie suas receitas
+    e despesas.
+</p>
+
+
+<p>
+
+    <a
+        href="{{ url_for(
+            'movimentacoes.cadastrar_receita'
+        ) }}"
+    >
+        Nova Receita
+    </a>
+
+    |
+
+    <a
+        href="{{ url_for(
+            'movimentacoes.cadastrar_despesa'
+        ) }}"
+    >
+        Nova Despesa
+    </a>
+
+</p>
+
+
+<h3>Filtros</h3>
+
+
+<form method="GET">
+
+    <div>
+
+        <label for="tipo">
+            Tipo
+        </label>
+
+        <select
+            id="tipo"
+            name="tipo"
+        >
+
+            <option value="">
+                Todos
+            </option>
+
+            <option
+                value="receita"
+                {% if filtros.tipo == "receita" %}
+                    selected
+                {% endif %}
+            >
+                Receita
+            </option>
+
+            <option
+                value="despesa"
+                {% if filtros.tipo == "despesa" %}
+                    selected
+                {% endif %}
+            >
+                Despesa
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div>
+
+        <label for="categoria">
+            Categoria
+        </label>
+
+        <select
+            id="categoria"
+            name="categoria"
+        >
+
+            <option value="">
+                Todas
+            </option>
+
+            {% for categoria in categorias %}
+
+                <option
+                    value="{{ categoria }}"
+                    {% if filtros.categoria
+                        == categoria %}
+                        selected
+                    {% endif %}
+                >
+                    {{ categoria }}
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+    </div>
+
+
+    <div>
+
+        <label for="data_inicio">
+            Data inicial
+        </label>
+
+        <input
+            type="date"
+            id="data_inicio"
+            name="data_inicio"
+            value="{{ filtros.data_inicio }}"
+        >
+
+    </div>
+
+
+    <div>
+
+        <label for="data_fim">
+            Data final
+        </label>
+
+        <input
+            type="date"
+            id="data_fim"
+            name="data_fim"
+            value="{{ filtros.data_fim }}"
+        >
+
+    </div>
+
+
+    <button type="submit">
+        Filtrar
+    </button>
+
+
+    <a
+        href="{{ url_for(
+            'movimentacoes.listar'
+        ) }}"
+    >
+        Limpar filtros
+    </a>
+
+</form>
+
+
+<hr>
+
+
+{% if movimentacoes %}
+
+<table
+    border="1"
+    cellpadding="8"
+>
+
+    <thead>
+
+        <tr>
+
+            <th>Data</th>
+
+            <th>Descrição</th>
+
+            <th>Categoria</th>
+
+            <th>Tipo</th>
+
+            <th>Valor</th>
+
+            <th>Forma</th>
+
+            <th>Ações</th>
+
+        </tr>
+
+    </thead>
+
+
+    <tbody>
+
+        {% for movimentacao
+            in movimentacoes %}
+
+        <tr>
+
+            <td>
+                {{
+                    movimentacao.data
+                    .strftime('%d/%m/%Y')
+                }}
+            </td>
+
+
+            <td>
+                {{ movimentacao.descricao }}
+            </td>
+
+
+            <td>
+                {{ movimentacao.categoria }}
+            </td>
+
+
+            <td>
+                {{
+                    movimentacao.tipo
+                    |capitalize
+                }}
+            </td>
+
+
+            <td>
+                R$
+                {{
+                    "%.2f"|format(
+                        movimentacao.valor
+                    )
+                }}
+            </td>
+
+
+            <td>
+
+                {% if movimentacao.tipo
+                    == "receita" %}
+
+                    {{
+                        movimentacao
+                        .forma_recebimento
+                    }}
+
+                {% else %}
+
+                    {{
+                        movimentacao
+                        .forma_pagamento
+                    }}
+
+                {% endif %}
+
+            </td>
+
+
+            <td>
+
+                <a
+                    href="{{ url_for(
+                        'movimentacoes.editar',
+                        movimentacao_id=movimentacao.id
+                    ) }}"
+                >
+                    Editar
+                </a>
+
+
+                <form
+                    method="POST"
+                    action="{{ url_for(
+                        'movimentacoes.excluir',
+                        movimentacao_id=movimentacao.id
+                    ) }}"
+                    style="display: inline;"
+                    onsubmit="
+                        return confirm(
+                            'Deseja realmente excluir esta movimentação?'
+                        );
+                    "
+                >
+
+                    <button type="submit">
+                        Excluir
+                    </button>
+
+                </form>
+
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+
+{% else %}
+
+<p>
+    Nenhuma movimentação encontrada.
+</p>
+
+{% endif %}
+
+
+<p>
+
+    <a
+        href="{{ url_for(
+            'main.index'
+        ) }}"
+    >
+        Voltar ao Dashboard
+    </a>
+
+</p>
+
+{% endblock %}

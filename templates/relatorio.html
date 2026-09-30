@@ -1,0 +1,339 @@
+{% extends "base.html" %}
+
+{% block title %}
+Relatório Financeiro - MEICash
+{% endblock %}
+
+
+{% block content %}
+
+<div class="nao-imprimir">
+
+    <h2>Relatório Financeiro</h2>
+
+    <p>
+        Selecione o período que deseja analisar.
+    </p>
+
+
+    <form
+        method="GET"
+        class="formulario-relatorio"
+    >
+
+        <div>
+
+            <label for="data_inicio">
+                Data inicial
+            </label>
+
+            <input
+                type="date"
+                id="data_inicio"
+                name="data_inicio"
+                value="{{ data_inicio }}"
+                required
+            >
+
+        </div>
+
+
+        <div>
+
+            <label for="data_fim">
+                Data final
+            </label>
+
+            <input
+                type="date"
+                id="data_fim"
+                name="data_fim"
+                value="{{ data_fim }}"
+                required
+            >
+
+        </div>
+
+
+        <button
+            type="submit"
+            name="gerar"
+            value="1"
+        >
+            Gerar Relatório
+        </button>
+
+    </form>
+
+</div>
+
+
+{% if relatorio %}
+
+<div class="relatorio">
+
+    <div class="cabecalho-relatorio">
+
+        <h2>
+            MEICash
+        </h2>
+
+        <h3>
+            Relatório Financeiro
+        </h3>
+
+        <p>
+            Usuário:
+            {{ current_user.nome }}
+        </p>
+
+        <p>
+            Período:
+            {{
+                relatorio.data_inicio
+                .strftime('%d/%m/%Y')
+            }}
+            a
+            {{
+                relatorio.data_fim
+                .strftime('%d/%m/%Y')
+            }}
+        </p>
+
+    </div>
+
+
+    <div class="resumo-financeiro">
+
+        <div class="card-resumo">
+
+            <h4>
+                Receitas
+            </h4>
+
+            <p>
+                R$
+                {{
+                    "%.2f"|format(
+                        relatorio.total_receitas
+                    )
+                }}
+            </p>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <h4>
+                Despesas
+            </h4>
+
+            <p>
+                R$
+                {{
+                    "%.2f"|format(
+                        relatorio.total_despesas
+                    )
+                }}
+            </p>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <h4>
+                Saldo
+            </h4>
+
+            <p>
+                R$
+                {{
+                    "%.2f"|format(
+                        relatorio.saldo
+                    )
+                }}
+            </p>
+
+        </div>
+
+
+        <div class="card-resumo">
+
+            <h4>
+                Movimentações
+            </h4>
+
+            <p>
+                {{ relatorio.quantidade }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <h3>
+        Movimentações do período
+    </h3>
+
+
+    {% if relatorio.movimentacoes %}
+
+    <table>
+
+        <thead>
+
+            <tr>
+
+                <th>
+                    Data
+                </th>
+
+                <th>
+                    Descrição
+                </th>
+
+                <th>
+                    Categoria
+                </th>
+
+                <th>
+                    Tipo
+                </th>
+
+                <th>
+                    Valor
+                </th>
+
+                <th>
+                    Forma
+                </th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            {% for movimentacao
+                in relatorio.movimentacoes %}
+
+            <tr>
+
+                <td>
+                    {{
+                        movimentacao.data
+                        .strftime('%d/%m/%Y')
+                    }}
+                </td>
+
+
+                <td>
+                    {{ movimentacao.descricao }}
+                </td>
+
+
+                <td>
+                    {{ movimentacao.categoria }}
+                </td>
+
+
+                <td>
+                    {{
+                        movimentacao.tipo
+                        |capitalize
+                    }}
+                </td>
+
+
+                <td>
+                    R$
+                    {{
+                        "%.2f"|format(
+                            movimentacao.valor
+                        )
+                    }}
+                </td>
+
+
+                <td>
+
+                    {% if movimentacao.tipo
+                        == "receita" %}
+
+                        {{
+                            movimentacao
+                            .forma_recebimento
+                        }}
+
+                    {% else %}
+
+                        {{
+                            movimentacao
+                            .forma_pagamento
+                        }}
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+
+    </table>
+
+
+    {% else %}
+
+    <p>
+        Não existem movimentações
+        neste período.
+    </p>
+
+    {% endif %}
+
+</div>
+
+
+<div class="acoes-relatorio nao-imprimir">
+
+    <button
+        type="button"
+        onclick="window.print()"
+    >
+        Imprimir / Salvar em PDF
+    </button>
+
+
+    <a href="{{ url_for('main.index') }}">
+        Voltar ao Dashboard
+    </a>
+
+</div>
+
+
+{% else %}
+
+
+<div class="nao-imprimir">
+
+    <p>
+        Informe um período acima para
+        gerar o relatório.
+    </p>
+
+    <a href="{{ url_for('main.index') }}">
+        Voltar ao Dashboard
+    </a>
+
+</div>
+
+{% endif %}
+
+{% endblock %}
