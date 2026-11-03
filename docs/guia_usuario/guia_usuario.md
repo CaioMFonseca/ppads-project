@@ -214,3 +214,6 @@ Individual uma forma simples de registrar e acompanhar receitas e despesas.
 Nesta primeira iteração da fase de construção, foram disponibilizadas as
 principais funcionalidades relacionadas ao cadastro de usuário, autenticação,
 controle de movimentações, resumo financeiro e emissão de relatório.
+
+
+> Documento atualizado no branch iteracao2 para exercício de controle de versão.
