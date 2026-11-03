@@ -1,3 +1,9 @@
 # Projeto de Prática Profissional em ADS
+
 ## Grupo 15
-### DataMEI - Sistema de Controle Financeiro para Microempreendedores individuais
+
+### MEICash - Sistema de Controle Financeiro para Microempreendedores Individuais
+
+## Iteração 2
+
+Branch criado para exercício de versionamento e controle de branches.
