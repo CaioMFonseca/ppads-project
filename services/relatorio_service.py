@@ -57,18 +57,70 @@ class RelatorioService:
         total_receitas = Decimal("0.00")
         total_despesas = Decimal("0.00")
 
+        despesas_por_categoria = {}
+
         for movimentacao in movimentacoes:
 
             if movimentacao.tipo == "receita":
-                total_receitas += movimentacao.valor
+
+                total_receitas += (
+                    movimentacao.valor
+                )
 
             elif movimentacao.tipo == "despesa":
-                total_despesas += movimentacao.valor
+
+                total_despesas += (
+                    movimentacao.valor
+                )
+
+                categoria = (
+                    movimentacao.categoria
+                )
+
+                if categoria not in despesas_por_categoria:
+
+                    despesas_por_categoria[
+                        categoria
+                    ] = Decimal("0.00")
+
+                despesas_por_categoria[
+                    categoria
+                ] += movimentacao.valor
 
         saldo = (
             total_receitas
             - total_despesas
         )
+
+        distribuicao_despesas = []
+
+        categorias_ordenadas = sorted(
+            despesas_por_categoria.items(),
+            key=lambda item: item[1],
+            reverse=True
+        )
+
+        for categoria, total in categorias_ordenadas:
+
+            if total_despesas > 0:
+
+                percentual = (
+                    total
+                    / total_despesas
+                    * Decimal("100")
+                )
+
+            else:
+
+                percentual = Decimal("0.00")
+
+            distribuicao_despesas.append(
+                {
+                    "categoria": categoria,
+                    "total": total,
+                    "percentual": percentual
+                }
+            )
 
         return {
             "data_inicio": inicio,
@@ -77,5 +129,10 @@ class RelatorioService:
             "total_receitas": total_receitas,
             "total_despesas": total_despesas,
             "saldo": saldo,
-            "quantidade": len(movimentacoes)
+            "quantidade": len(
+                movimentacoes
+            ),
+            "despesas_por_categoria": (
+                distribuicao_despesas
+            )
         }

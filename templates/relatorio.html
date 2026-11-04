@@ -173,6 +173,60 @@ Relatório Financeiro - MEICash
 
     </div>
 
+{% if relatorio.despesas_por_categoria %}
+
+<h3>
+    Despesas por categoria
+</h3>
+
+<table>
+
+    <thead>
+
+        <tr>
+            <th>Categoria</th>
+            <th>Total</th>
+            <th>Percentual</th>
+        </tr>
+
+    </thead>
+
+    <tbody>
+
+        {% for item in relatorio.despesas_por_categoria %}
+
+        <tr>
+
+            <td>
+                {{ item.categoria }}
+            </td>
+
+            <td>
+                R$
+                {{
+                    "%.2f"|format(
+                        item.total
+                    )
+                }}
+            </td>
+
+            <td>
+                {{
+                    "%.2f"|format(
+                        item.percentual
+                    )
+                }}%
+            </td>
+
+        </tr>
+
+        {% endfor %}
+
+    </tbody>
+
+</table>
+
+{% endif %}
 
     <h3>
         Movimentações do período
@@ -311,12 +365,24 @@ Relatório Financeiro - MEICash
     </button>
 
 
+    <a
+        href="{{
+            url_for(
+                'relatorios.exportar_csv',
+                data_inicio=data_inicio,
+                data_fim=data_fim
+            )
+        }}"
+    >
+        Exportar CSV
+    </a>
+
+
     <a href="{{ url_for('main.index') }}">
         Voltar ao Dashboard
     </a>
 
 </div>
-
 
 {% else %}
 
